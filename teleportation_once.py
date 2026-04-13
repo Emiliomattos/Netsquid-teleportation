@@ -1,3 +1,5 @@
+from ns_sampling.noise import apply_depolarizing_noise
+from netsquid.util.simstats import SimStats
 import netsquid as ns
 from netsquid.qubits import qubitapi as qapi
 
@@ -12,12 +14,16 @@ from ns_sampling.measure import (
 )
 
 
-def build_teleportation_output_density_matrix():
+def build_teleportation_output_density_matrix(depolar_rate=0, delay=1):
     """
     Run the teleportation protocol once in NetSquid and return
     Bob's final 1-qubit density matrix.
+    Optional depolarizing noise is applied to Bob's final qubit.
     """
     ns.sim_reset()
+
+    stats = SimStats()
+    stats.start()
 
     alice, bob = build_network()
     load_qubits(alice, bob)
@@ -28,13 +34,24 @@ def build_teleportation_output_density_matrix():
 
     ns.sim_run()
 
+    stats.end()
+
+    print("\nNetSquid simulation summary:")
+    print(stats.summary())
+
     qb = bob.qmemory.peek([0])[0]
+
+    if depolar_rate > 0:
+        apply_depolarizing_noise(qb, depolar_rate=depolar_rate, delay=delay)
+
     rho = qapi.reduced_dm(qb)
-    return rho
+    return rho 
 
-
-def main(num_samples=100):
-    rho = build_teleportation_output_density_matrix()
+def main(num_samples=100, depolar_rate=0, delay=1):
+    rho = build_teleportation_output_density_matrix(
+        depolar_rate=depolar_rate,
+        delay=delay
+    )
 
     print("Teleportation output density matrix (Bob's qubit):")
     print_density_matrix(rho)
@@ -60,4 +77,6 @@ def main(num_samples=100):
 
 
 if __name__ == "__main__":
-    main(num_samples=100)
+    main(num_samples=100, depolar_rate=1e7, delay=1)
+
+    
