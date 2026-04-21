@@ -21,6 +21,7 @@ def build_teleportation_output_density_matrix(depolar_rate=0, delay=1):
     Optional depolarizing noise is applied to Bob's final qubit.
     """
     ns.sim_reset()
+    ns.set_qstate_formalism(ns.QFormalism.DM)
 
     stats = SimStats()
     stats.start()
@@ -45,8 +46,9 @@ def build_teleportation_output_density_matrix(depolar_rate=0, delay=1):
         apply_depolarizing_noise(qb, depolar_rate=depolar_rate, delay=delay)
 
     rho = qapi.reduced_dm(qb)
-    return rho 
-
+    return rho
+ 
+   
 def main(num_samples=100, depolar_rate=0, delay=1):
     rho = build_teleportation_output_density_matrix(
         depolar_rate=depolar_rate,

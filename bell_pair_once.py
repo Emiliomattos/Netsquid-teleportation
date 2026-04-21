@@ -16,6 +16,9 @@ def build_bell_pair_density_matrix(depolar_rate=0, delay=1):
     Create a Bell pair in NetSquid and return its 2-qubit density matrix.
     Optional depolarizing noise can be applied before measurement.
     """
+    ns.sim_reset()
+    ns.set_qstate_formalism(ns.QFormalism.DM)
+
     q1, q2 = qapi.create_qubits(2)
     qapi.operate(q1, ns.H)
     qapi.operate([q1, q2], ns.CNOT)
@@ -26,7 +29,6 @@ def build_bell_pair_density_matrix(depolar_rate=0, delay=1):
 
     rho = qapi.reduced_dm([q1, q2])
     return rho
-
 
 def main(num_samples=100, depolar_rate=0, delay=1):
     rho = build_bell_pair_density_matrix(depolar_rate=depolar_rate, delay=delay)
@@ -55,4 +57,4 @@ def main(num_samples=100, depolar_rate=0, delay=1):
 
 
 if __name__ == "__main__":
-    main(num_samples=100, depolar_rate=1e7, delay=1)
+    main(num_samples=100, depolar_rate=0.5, delay=10000)
