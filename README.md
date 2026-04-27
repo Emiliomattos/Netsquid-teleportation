@@ -168,15 +168,6 @@ Depolarizing Rate    Fidelity
 
 ---
 
-## Future Work
-
-- Add other noise models (dephasing, amplitude damping)
-- Apply noise during protocol execution
-- Extend to multi-node quantum networks
-- Compare sampling vs repeated simulation
-
----
-
 ## Author
 
 Emilio Mattos  
